@@ -40,7 +40,6 @@ authRouter.post("/login", async (req, res) => {
 
 authRouter.post("/signup",async(req,res) => {
     const {email,password} = req.body;
-    console.log({email,password})
     if(!email){
         res.status(400).json({
             message:`Missing Credentials for Signup : Email`
@@ -56,7 +55,7 @@ authRouter.post("/signup",async(req,res) => {
             email: email
         })
         if(user){
-            res.status(409).json({
+            return res.status(409).json({
                 message: `User already exists. Please login`
             })
         }
