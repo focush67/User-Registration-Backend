@@ -1,10 +1,10 @@
-import express from "express";
+import {Router} from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {User} from "../models/User.js";
 import {config} from "dotenv";
 config();
-const authRouter = express.Router();
+const authRouter = Router();
 
 authRouter.post("/login", async (req, res) => {
     const {email,password} = req.body;
