@@ -22,6 +22,11 @@ taskRouter.get("/",authMiddleware,async(req,res) => {
 taskRouter.post("/",authMiddleware,async(req,res) => {
     try{
         const {title,description,type,deadline,habitTime} = req.body;
+        console.log("Title",title);
+        console.log("Description",description);
+        console.log("Deadline",deadline);
+        console.log("Type",type);
+        console.log("habitTime",habitTime);
         const newTask = new Task({
             userID: req.user.id,
             title,
