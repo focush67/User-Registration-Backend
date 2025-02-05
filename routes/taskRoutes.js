@@ -22,11 +22,6 @@ taskRouter.get("/",authMiddleware,async(req,res) => {
 taskRouter.post("/",authMiddleware,async(req,res) => {
     try{
         const {title,description,type,deadline,habitTime} = req.body;
-        console.log("Title",title);
-        console.log("Description",description);
-        console.log("Deadline",deadline);
-        console.log("Type",type);
-        console.log("habitTime",habitTime);
         const newTask = new Task({
             userID: req.user.id,
             title,
@@ -61,6 +56,29 @@ taskRouter.delete("/:id",authMiddleware,async(req,res) => {
     }catch(error){
         console.log(`Error in delete route in taskRouter`,error);
         res.status(500).json({message:`Server error in deleting task`})
+    }
+})
+
+taskRouter.patch("/:id",authMiddleware,async(req,res) => {
+    try{
+        const {id} = req.params;
+        const {title,description,type,deadline,habitTime} = req.body;
+        const updatedTask = await Task.findByIdAndUpdate({_id: id,userID: req.user.id},{title,description,type,deadline,habitTime},{new:true,runValidators:true});
+
+        if(!updatedTask){
+            return res.status(404).json({
+                message:"No Task Found to Update"
+            })
+        }
+        res.status(201).json({
+            message:`Task Updated Successfuly`,
+            task:updatedTask._id
+        })
+    }catch(error){
+        console.error(`Error in patch route in taskRouter`,error);
+        res.status(500).json({
+        message:`Error inside patch in taskRouter`
+        })
     }
 })
 
