@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {User} from "../models/User.js";
 import {config} from "dotenv";
+import authMiddleware from "../middlewares/authMiddleware.js";
 config();
 const authRouter = Router();
 
@@ -17,7 +18,7 @@ authRouter.post("/login", async (req, res) => {
     }
     const isMatch = await bcrypt.compare(password,user.password);
     if(!isMatch){
-        return res.status(405).json({
+        return res.status(400).json({
             message:`Invalid Login Credentials for ${user.email}`
         })
     }
@@ -67,7 +68,8 @@ authRouter.post("/signup",async(req,res) => {
         })
         await newUser.save();
         return res.status(201).json({
-            message:`User successfully registered. Proceed to login.`
+            message:`User successfully registered. Proceed to login.`,
+            user: newUser._id
         })
     }catch(error){
         console.log(`Error inside /signup POST ${error}`);
@@ -78,5 +80,9 @@ authRouter.post("/signup",async(req,res) => {
     }
 })
 
+
+authRouter.get("/validate-token",authMiddleware,async(req,res) => {
+    res.status(200).json({message:"Token is Valid"})
+})
 
 export default authRouter;
